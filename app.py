@@ -10,10 +10,30 @@ app = Flask(__name__)
 # Lấy giá trị từ biến môi trường, với giá trị mặc định nếu không có
 min_detection_confidence = float(os.getenv('MIN_DETECTION_CONFIDENCE', 0.5))
 model_selection = int(os.getenv('MODEL_SELECTION', 1))
+token_authorize = os.getenv('TOKEN_AUTHORIZE', '')
 
 # Khởi tạo MediaPipe Face Detection
 mp_face_detection = mp.solutions.face_detection
-face_detection = mp_face_detection.FaceDetection(min_detection_confidence=min_detection_confidence, model_selection=model_selection)
+face_detection = mp_face_detection.FaceDetection(min_detection_confidence=min_detection_confidence,
+                                                 model_selection=model_selection)
+
+
+# Hàm kiểm tra token
+def check_token():
+    if token_authorize:
+        token = request.headers.get('Authorization')
+        if token != token_authorize and token != 'Bearer ' + token_authorize:
+            return jsonify({'error': 'Unauthorized'}), 401
+    return None
+
+
+# Hàm kiểm tra token trước mỗi yêu cầu
+@app.before_request
+def before_request():
+    response = check_token()
+    if response:
+        return response
+
 
 @app.route('/detect_face', methods=['POST'])
 def detect_face():
@@ -67,6 +87,7 @@ def detect_face():
         return send_file(img_bytes, mimetype='image/jpeg')
 
     return jsonify({'faces': faces})
+
 
 if __name__ == '__main__':
     # Lấy PORT từ biến môi trường, nếu không có thì mặc định là 5000
