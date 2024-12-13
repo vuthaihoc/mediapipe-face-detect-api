@@ -1,0 +1,11 @@
+{
+  "commands":
+  [
+   {
+     "protocol": "http",
+     "method": "POST",
+     "resource": "/detect_face",
+     "body_file": "img1.jpeg"
+   }
+  ]
+}

@@ -22,4 +22,11 @@ http://127.0.0.1:5001/detect_face\?return_image\=true -o out.img2.png
 
 ```bash
 docker run --rm --name mediapipe -p 5001:5000 vuthaihoc/mediapipe-face-detect-api
+
+# Or slim version
+# slimmed by 'docker-slim build --target vuthaihoc/mediapipe-face-detect-api:latest --http-probe true --http-probe-cmd-file http.probe.json'
+
+docker run --rm --name mediapipe -p 5001:5000 vuthaihoc/mediapipe-face-detect-api:slim
+
 ```
+
